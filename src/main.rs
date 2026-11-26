@@ -208,13 +208,16 @@ async fn main() {
             image.export_png(&name);
             println!("[MROK] zrzut ekranu: {name}");
         }
-        if !shot_taken && shot_at.is_some_and(|t| clock >= t) {
+        // Zegar scienny zamiast sumy dt: okno w tle moze byc throttlowane
+        // przez system i wtedy testowe zrzuty/wyjscie nigdy by nie zadzialaly.
+        let wall = get_time();
+        if !shot_taken && shot_at.is_some_and(|t| wall >= t as f64) {
             let image = get_screen_data();
             image.export_png("mrok_auto.png");
             println!("[MROK] zrzut ekranu: mrok_auto.png");
             shot_taken = true;
         }
-        if quit_after.is_some_and(|t| clock >= t) {
+        if quit_after.is_some_and(|t| wall >= t as f64) {
             std::process::exit(0);
         }
 

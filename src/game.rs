@@ -545,8 +545,19 @@ impl Game {
             }
 
             let dist = m.pos.distance(self.player.pos);
-            let sees = dist < 430.0 && self.map.line_of_sight(m.pos, self.player.pos);
-            if sees {
+            // Latarka zdradza pozycje: im jasniej, tym dalej widza.
+            // Bieg slychac przez sciany; chodzenie tylko z bliska.
+            let sight_range = 400.0 + self.player.light_level * 110.0;
+            let sees = dist < sight_range && self.map.line_of_sight(m.pos, self.player.pos);
+            let hearing_range = if self.player.sprinting {
+                260.0
+            } else if self.player.moving {
+                150.0
+            } else {
+                0.0
+            };
+            let hears = dist < hearing_range;
+            if sees || hears {
                 m.alert = 4.0;
             } else {
                 m.alert = (m.alert - dt).max(0.0);

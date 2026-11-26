@@ -114,9 +114,10 @@ Optymalizacje w kodzie:
 - **`FilterMode::Nearest`** — brak interpolacji, ostry pixel-art i tańsze próbkowanie.
 - **Throttling AI** — BFS potworów przeliczany co ~0.35 s, nie co klatkę; ścieżki cache'owane.
 - **Dystansowe culling** — obiekty poza ekranem i daleko od gracza nie są rysowane/aktualizowane.
-- **Brak alokacji w pętli klatki** — wektory cząstek i ścieżek są reużywane; teksty HUD formatowane tylko przy zmianie.
+- **Brak I/O w pętli klatki** — wszystkie tekstury i dźwięki powstają raz przy starcie; gra nie dotyka dysku podczas rozgrywki.
+- **Reużywane bufory** — cząstki, ścieżki BFS i wektory zdarzeń są przetwarzane bez ciągłego tworzenia nowych struktur.
 - **Deterministyczny RNG** — tani hash zamiast zewnętrznych crate'ów; powtarzalne seedowanie do testów.
-- **Jeden atlas proceduralny na kategorię** — mniej przełączeń tekstur.
+- **Renderowane tylko widoczne kafle** — pętla rysowania ogranicza się do zakresu kamery, nie do całej mapy.
 
 ## Struktura projektu
 
@@ -173,6 +174,20 @@ Przykład:
 ```bash
 MROK_AUTOPLAY=1 MROK_SHOT_AT=2.0 MROK_QUIT_AFTER=3.0 cargo run --release
 ```
+
+## Rozwiązywanie problemów
+
+**macOS: aplikacja nie chce się otworzyć.** Binarka jest podpisana ad-hoc, więc Gatekeeper może ją zablokować. Kliknij prawym przyciskiem → **Otwórz**, albo:
+
+```bash
+xattr -dr com.apple.quarantine dist/MROK.app
+```
+
+**macOS: crash przy starcie z `AudioQueueStart` / `assertion failed: res == 0`.** To panika biblioteki `quad-snd`, gdy CoreAudio nie może otworzyć kolejki audio (np. przy przełączaniu urządzenia wyjściowego). Upewnij się, że w System Settings → Sound wybrane jest działające wyjście, i uruchom grę ponownie.
+
+**Windows: brak `VCRUNTIME140.dll`.** Zainstaluj [Visual C++ Redistributable](https://aka.ms/vs/17/release/vc-redist.x64.exe) (większość systemów już go ma).
+
+**Za ciemno / nie widać nic.** To horror — stożek latarki to cała widoczność. Naciśnij `F`, żeby ją włączyć. Jasność monitora też pomaga.
 
 ## Licencja
 
