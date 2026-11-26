@@ -1,0 +1,28 @@
+[package]
+name = "mrok"
+version = "0.1.0"
+edition = "2021"
+description = "MROK // ZAKLAD - proceduralny horror w Rust"
+license = "MIT"
+
+[dependencies]
+macroquad = { version = "0.4.16", features = ["audio"] }
+
+# Optymalizacje wydania: mniejszy, szybszy binarny plik.
+# Zrodlo: https://doc.rust-lang.org/cargo/reference/profiles.html
+[profile.release]
+opt-level = 3
+lto = "fat"
+codegen-units = 1
+panic = "abort"
+strip = "symbols"
+debug = false
+incremental = false
+
+# Szybszy dev-loop: zaleznosci kompilowane z optymalizacja,
+# wlasny kod z opt-level=1 (szybka kompilacja, grywalne FPS).
+[profile.dev]
+opt-level = 1
+
+[profile.dev.package."*"]
+opt-level = 2
