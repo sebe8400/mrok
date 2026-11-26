@@ -2,6 +2,9 @@
 //! Proceduralny horror top-down. Wszystko - tekstury, dzwiek, mapa - powstaje
 //! w kodzie. Bez assetow, bez internetu, bez litosci.
 
+// Na Windowsie w release nie pokazuj konsoli — tylko okno gry.
+#![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
+
 mod assets;
 mod fx;
 mod game;

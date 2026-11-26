@@ -83,8 +83,12 @@ Paczkę ZIP zbudujesz w PowerShell:
 ```bash
 cargo install cargo-xwin
 rustup target add x86_64-pc-windows-msvc
-cargo xwin build --release --target x86_64-pc-windows-msvc
+# --xwin-arch x86_64 ogranicza pobieranie SDK (domyslnie ciagnie tez ARM64)
+cargo xwin build --release --target x86_64-pc-windows-msvc --xwin-arch x86_64
+# wynik: target/x86_64-pc-windows-msvc/release/mrok.exe
 ```
+
+Build Windows jest weryfikowany lokalnie (PE32+, podsystem GUI) oraz w CI na `windows-latest`.
 
 ## Optymalizacja
 

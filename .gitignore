@@ -1,4 +1,5 @@
 /target
+/dist
 /mrok_auto.png
 /mrok_*.png
 .DS_Store
